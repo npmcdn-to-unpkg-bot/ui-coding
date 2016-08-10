@@ -1,0 +1,22 @@
+{
+  "name": "ui-coding",
+  "version": "1.0.0",
+  "description": "They made me do it!",
+  "main": "app.js",
+  "scripts": {
+    "test": "jasmine tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaycatRakittra/ui-coding.git"
+  },
+  "author": "Ray Perry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RaycatRakittra/ui-coding/issues"
+  },
+  "homepage": "https://github.com/RaycatRakittra/ui-coding#readme",
+  "devDependencies": {
+    "jasmine": "^2.4.1"
+  }
+}
