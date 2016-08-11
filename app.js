@@ -185,6 +185,7 @@ function getTotals() {
 
 }
 
+// Get all communities.
 function getCommunities() {
 
   // Reset communities.
@@ -193,6 +194,23 @@ function getCommunities() {
   // Make the request.
   this.pendingApiCall = this.baseApiUrl + this.selectCommunitiesUrl;
   oboe(this.pendingApiCall)
+    .node('{community_area_name}', function(chunk) {
+
+      console.log(chunk);
+
+      d3
+        .selectAll('#communities option')
+        .data([chunk])
+        .enter()
+        .select('#communities')
+        .insert('option')
+        .attr('value',function(d) {
+          return d.community_area_name;
+        })
+        .text(function(d) {
+          return d.community_area_name;
+        });
+    })
     .done(function(data) {
       this.communities = data;
     })
@@ -201,7 +219,8 @@ function getCommunities() {
     })
 
 }
-function attachControls() {}
+
+// Set the active community
 function setActiveCommunity(community) {
   if (!community) {
     throw 'setActiveCommunity: Missing community';
@@ -209,6 +228,11 @@ function setActiveCommunity(community) {
 
   this.residentialData = [];
   this.commercialData = [];
+  d3
+    .selectAll('#data div')
+    .exit()
+    .remove();
+
   this.activeCommunity = community;
   d3
     .select('#title p')
@@ -217,6 +241,8 @@ function setActiveCommunity(community) {
   // Get initial data, residential first.
   this.getData('Residential');
 }
+
+function attachControls() {}
 
 
 
