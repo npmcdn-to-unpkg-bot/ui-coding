@@ -18,13 +18,21 @@
 
         .mont {
             font-family: 'Montserrat', sans-serif;
-        }
+         }
+
         </style>
     </head>
     <body>
-        <div id="title" class="bg-light-blue tc center f2 pv1 mv1">
+        <div id="title" class="tc center f2 pv1 mv1">
             <p>Hermosa</p>
         </div>
+        <div id="controls" class="w-80 tc dt center mv3" style="border-spacing:5px;">
+            <div id="first" class="dtc tc pa1 mh3 br2 bg-light-red"><span>First</span></div>
+            <div id="back" class="dtc tc pa1 mh3 br2 bg-light-red"><span>Back</span></div>
+            <div id="next" class="dtc tc pa1 mh3 br2 bg-light-red"><span>Next</span></div>
+            <div id="last" class="dtc tc pa1 mh3 br2 bg-light-red"><span>Last</span></div>
+        </div>
+
 
         <!-- Oboe, because I refuse to spend a billion hours on AJAX, trying to stream JSON. -->
         <script src="oboe-browser.min.js"></script>
@@ -39,7 +47,7 @@
             var app = new App();
 
             // Wait for the DOM to get ready.
-            document.addEventListener('DOMContentLoaded', app.onReady());
+            document.addEventListener('DOMContentLoaded', app.ready());
         </script>
     </body>
 </html>

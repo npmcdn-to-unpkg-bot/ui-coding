@@ -14,23 +14,30 @@ describe('UI Coding Exercise', function () {
   it('should contain an App object', function () {
     expect(typeof mockApp).toBe('object');
   });
-  it('should call onReady', function () {
-    var onReadySpy = spyOn(mockApp, 'onReady');
-    mockApp.onReady();
-    expect(onReadySpy).toHaveBeenCalled();
+  it('should call ready', function () {
+    var readySpy = spyOn(mockApp, 'ready');
+    mockApp.ready();
+    expect(readySpy).toHaveBeenCalled();
   });
   it('should call getData and store residential data', function () {
     var getDataSpy = spyOn(mockApp, 'getData').and.callFake(function() {
       this.residentialData = testData;
-
-      this.commercialData = testData;
     });
 
-    mockApp.onReady();
+    mockApp.ready();
 
     expect(getDataSpy).toHaveBeenCalled();
     expect(mockApp.residentialData).toEqual(testData);
-    expect(mockApp.commercialData).toEqual(testData);
+  });
 
+  it('should call getData and store commercial data', function () {
+    var getDataSpy = spyOn(mockApp, 'getData').and.callFake(function() {
+      this.commercialData = testData;
+    });
+
+    mockApp.ready();
+
+    expect(getDataSpy).toHaveBeenCalled();
+    expect(mockApp.commercialData).toEqual(testData);
   });
 });

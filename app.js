@@ -24,7 +24,7 @@ function App(){
 
 // App functions.
 App.prototype = {
-  onReady: onReady,
+  ready: ready,
   getData: getData,
   onData: onData,
   whenDone: whenDone,
@@ -35,8 +35,11 @@ App.prototype = {
 
 // Main callback.
 // Called only when the DOM is ready.
-function onReady() {
+function ready() {
   // Set up the charts?
+  
+
+
   // Get initial data, residential first.
   this.getData('Residential');
 }
@@ -85,10 +88,10 @@ function onData(chunk, path, ancestors) {
     .append('div')
     .attr('class', 'w-100 br4 dt h-100 pa1')
     .append('div')
-    .attr('class', 'w-10 f4 tc v-mid dtc bg-light-yellow')
+    .attr('class', 'data w-10 f4 tc v-mid dtc bg-light-yellow')
     .append('p')
     .text(ancestors[0].length)
-    .select(function(){
+    .select(function() {
       return this.parentNode.parentNode;
     })
     .insert('div')
@@ -98,18 +101,20 @@ function onData(chunk, path, ancestors) {
       return c;
     })
     .append('p')
+    .attr('class', 'mv2')
     .text(function(d) {
       return 'Building Subtype: ' + d.building_subtype;
     })
     .append('p')
+    .attr('class', 'mv2')
     .text(function(d) {
       return 'Total Therms: ' + d.total_therms;
     })
     .append('p')
+    .attr('class', 'mv2')
     .text(function(d) {
       return 'Total kWh: ' + d.total_kwh;
     });
-
 
 }
 
