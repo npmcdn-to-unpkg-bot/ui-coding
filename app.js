@@ -31,12 +31,6 @@ App.prototype = {
   getTotals: getTotals
 }
 
-// Activate the app.
-var app = new App();
-
-// Wait for the DOM to get ready.
-document.addEventListener('DOMContentLoaded', app.onReady());
-
 ///////////
 
 // Main callback.
@@ -89,9 +83,9 @@ function onData(chunk, path, ancestors) {
     .data([chunk])
     .enter()
     .append('div')
-    .attr('class', 'w-100 br4 dt h-100 pv3')
+    .attr('class', 'w-100 br4 dt h-100 pa1')
     .append('div')
-    .attr('class', 'w-20 f4 tc v-mid dtc bg-light-yellow')
+    .attr('class', 'w-10 f4 tc v-mid dtc bg-light-yellow')
     .append('p')
     .text(ancestors[0].length)
     .select(function(){
@@ -99,7 +93,7 @@ function onData(chunk, path, ancestors) {
     })
     .insert('div')
     .attr('class', function(d) {
-      var c = 'w-80 f5 pa3 dtc center ';
+      var c = 'w-90 f5 pa3 dtc center ';
       (d.building_type === 'Commercial') ? c += 'bg-light-red' : c += 'bg-light-blue';
       return c;
     })
