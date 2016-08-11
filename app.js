@@ -2,8 +2,9 @@
 // Ray Perry
 // 08/10/16
 
-// TODO: UI virtualization
+// TODO: Selectable community
 // TODO: Working controls
+// TODO: UI virtualization
 // TODO: Pagination
 // TODO: UI facelift
 
@@ -11,18 +12,26 @@
 
 // Main App container.
 function App(){
+  this.activeCommunity = '';
 
   // For switching the API store.
   this.apiType = '';
+
   // For building the API calls.
   this.pendingApiCall = '';
-  this.baseApiUrl = 'https://data.cityofchicago.org/resource/energy-usage-2010.json?community_area_name=Hermosa&building_type=';
-  this.selectFromApi = '&%24select=building_type%2Cbuilding_subtype%2Ctotal_kwh%2Ctotal_therms';
+  this.baseApiUrl = 'https://data.cityofchicago.org/resource/energy-usage-2010.json';
+  this.activeViewUrl = '?community_area_name=';
+  this.buildingTypeUrl = '&building_type=';
+  this.selectFieldsUrl = '&%24select=building_type%2Cbuilding_subtype%2Ctotal_kwh%2Ctotal_therms';
+  this.selectCommunitiesUrl = '?%24select=community_area_name&%24group=community_area_name';
+  this.apiLimiterUrl = '&%24limit=1';
+
   // For storing the data and the totals.
   this.residentialData = [];
   this.commercialData = [];
   this.residentialTotals = {};
   this.commercialTotals = {};
+
   // Can we safely use the data?
   this.dataReady = false;
 }
@@ -33,7 +42,10 @@ App.prototype = {
   getData: getData,
   onData: onData,
   whenDone: whenDone,
-  getTotals: getTotals
+  getTotals: getTotals,
+  getCommunities: getCommunities,
+  setActiveCommunity: setActiveCommunity,
+  attachControls: attachControls
 }
 
 ///////////
@@ -42,11 +54,16 @@ App.prototype = {
 // Called only when the DOM is ready.
 function ready() {
   // Set up the charts?
-  
 
 
-  // Get initial data, residential first.
-  this.getData('Residential');
+  // Get the communities.
+  this.getCommunities();
+
+  // Set activeCommunity.
+  this.setActiveCommunity('Hermosa');
+
+  // Set up controls
+  this.attachControls();
 }
 
 // Makes the required API calls.
@@ -60,16 +77,15 @@ function getData(type, debug) {
   this.apiType = type;
 
   // Create the API request.
-  this.pendingApiCall = this.baseApiUrl + type;
+  this.pendingApiCall = this.baseApiUrl + this.activeViewUrl + this.activeCommunity + this.buildingTypeUrl + this.apiType;
   // Limit the columns we get from the API.
-  this.pendingApiCall += this.selectFromApi;
+  this.pendingApiCall += this.selectFieldsUrl;
   // If debug is true, add a limit to the API requests.
   if (debug) {
-    this.pendingApiCall += '&%24limit=1';
+    this.pendingApiCall += this.apiLimiterUrl;
   }
 
   // Make a GET request to the API.
-  var count = 0;
   oboe(this.pendingApiCall)
     // If any chunk contains one of the keys below, call app.onData.
     .node('{building_type building_subtype total_kwh total_therms}', this.onData)
@@ -168,5 +184,40 @@ function getTotals() {
   console.log('WARNING: getTotals is no longer supported.');
 
 }
+
+function getCommunities() {
+
+  // Reset communities.
+  this.communities = [];
+
+  // Make the request.
+  this.pendingApiCall = this.baseApiUrl + this.selectCommunitiesUrl;
+  oboe(this.pendingApiCall)
+    .done(function(data) {
+      this.communities = data;
+    })
+    .fail(function(err) {
+      console.log('We failed, somehow? ', err);
+    })
+
+}
+function attachControls() {}
+function setActiveCommunity(community) {
+  if (!community) {
+    throw 'setActiveCommunity: Missing community';
+  }
+
+  this.residentialData = [];
+  this.commercialData = [];
+  this.activeCommunity = community;
+  d3
+    .select('#title p')
+    .text(community);
+
+  // Get initial data, residential first.
+  this.getData('Residential');
+}
+
+
 
 ////////////////
