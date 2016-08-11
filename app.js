@@ -2,6 +2,11 @@
 // Ray Perry
 // 08/10/16
 
+// TODO: UI virtualization
+// TODO: Working controls
+// TODO: Pagination
+// TODO: UI facelift
+
 'use strict';
 
 // Main App container.
