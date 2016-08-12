@@ -18,6 +18,7 @@ function App(){
 
   // For switching the API store.
   this.apiType = '';
+  this.showControls = false;
 
   // For building the API calls.
   this.pendingApiCall = '';
@@ -65,7 +66,9 @@ function ready() {
   this.setActiveCommunity('Hermosa');
 
   // Set up controls
-  this.attachControls();
+  if (this.showControls === true) {
+    this.attachControls();
+  }
 }
 
 // Makes the required API calls.
