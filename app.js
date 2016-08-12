@@ -240,7 +240,8 @@ function setActiveCommunity(community) {
   this.residentialData = [];
   this.commercialData = [];
 
-  d3.selectAll('#data div').remove();
+  d3.selectAll('#data-r div').remove();
+  d3.selectAll('#data-c div').remove();
 
   this.activeCommunity = community;
   d3
