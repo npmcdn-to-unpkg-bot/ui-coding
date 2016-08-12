@@ -89,8 +89,6 @@ function getData(type, debug) {
 
   // Make a GET request to the API.
   oboe(this.pendingApiCall)
-    // If any chunk contains one of the keys below, call app.onData.
-    .node('{building_type building_subtype total_kwh total_therms}', this.onData)
     // Run app.whenDone when complete.
     .done(this.whenDone.bind(this))
     // Error handling.
@@ -102,18 +100,27 @@ function getData(type, debug) {
 // Handle a chunk of data from the JSON stream.
 function onData(chunk, path, ancestors) {
 
+
+}
+
+// When the JSON is completely done, store it appropriately.
+function whenDone(data) {
+
   // Use d3 to add elements if the data wasn't there last call.
   // We just change the bg-color if is a Commercial entry, for now.
   d3
-    .selectAll('#data div')
-    .data([chunk])
+    .select('#data')
+    .selectAll('div')
+    .data(data)
     .enter()
     .append('div')
     .attr('class', 'w-100 br4 dt h-100 pa1')
     .append('div')
     .attr('class', 'data w-10 f4 tc v-mid dtc bg-light-yellow')
     .append('p')
-    .text(ancestors[0].length)
+    .text(function(d){
+      return data.indexOf(d) + 1;
+    })
     .select(function() {
       return this.parentNode.parentNode;
     })
@@ -139,10 +146,6 @@ function onData(chunk, path, ancestors) {
       return 'Total kWh: ' + d.total_kwh;
     });
 
-}
-
-// When the JSON is completely done, store it appropriately.
-function whenDone(data) {
   switch (this.apiType) {
     case 'Residential':
       this.residentialData = data;
@@ -197,9 +200,10 @@ function getCommunities() {
   this.pendingApiCall = this.baseApiUrl + this.selectCommunitiesUrl;
   oboe(this.pendingApiCall)
      .done(function(data) {
-      this.communities = data;
-      d3
-        .select('#communities')
+       this.communities = data;
+       var comSelect = d3.select('#communities');
+
+       comSelect
         .selectAll('option')
         .data(data)
         .enter()
@@ -210,6 +214,12 @@ function getCommunities() {
         .attr('value',function(d) {
           return d.community_area_name;
         });
+
+       comSelect
+         .on('change', function() {
+           var newCom = d3.select(this).property('value');
+           app.setActiveCommunity(newCom);
+         });
     })
     .fail(function(err) {
       console.log('We failed, somehow? ', err);
@@ -225,10 +235,8 @@ function setActiveCommunity(community) {
 
   this.residentialData = [];
   this.commercialData = [];
-  d3
-    .selectAll('#data div')
-    .exit()
-    .remove();
+
+  d3.selectAll('#data div').remove();
 
   this.activeCommunity = community;
   d3
