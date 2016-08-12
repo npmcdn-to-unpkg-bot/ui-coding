@@ -3,7 +3,7 @@
 // 08/10/16
 
 // TODO: UPDATE YOUR TESTS.
-
+// TODO: Separate functionality.
 // TODO: Selectable community
 // TODO: Working controls
 // TODO: UI virtualization
@@ -61,7 +61,7 @@ function ready() {
   // Get the communities.
   this.getCommunities();
 
-  // Set activeCommunity.
+  // Set active community.
   this.setActiveCommunity('Hermosa');
 
   // Set up controls
@@ -196,25 +196,20 @@ function getCommunities() {
   // Make the request.
   this.pendingApiCall = this.baseApiUrl + this.selectCommunitiesUrl;
   oboe(this.pendingApiCall)
-    .node('{community_area_name}', function(chunk) {
-
-      console.log(chunk);
-
+     .done(function(data) {
+      this.communities = data;
       d3
-        .selectAll('#communities option')
-        .data([chunk])
-        .enter()
         .select('#communities')
-        .insert('option')
-        .attr('value',function(d) {
-          return d.community_area_name;
-        })
+        .selectAll('option')
+        .data(data)
+        .enter()
+        .append('option')
         .text(function(d) {
           return d.community_area_name;
+        })
+        .attr('value',function(d) {
+          return d.community_area_name;
         });
-    })
-    .done(function(data) {
-      this.communities = data;
     })
     .fail(function(err) {
       console.log('We failed, somehow? ', err);

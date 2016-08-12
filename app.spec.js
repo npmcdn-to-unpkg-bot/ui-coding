@@ -24,6 +24,8 @@ describe('UI Coding Exercise', function () {
       this.residentialData = testData;
     });
 
+    spyOn(mockApp, 'getCommunities');
+
     mockApp.ready();
 
     expect(getDataSpy).toHaveBeenCalled();
@@ -35,9 +37,13 @@ describe('UI Coding Exercise', function () {
       this.commercialData = testData;
     });
 
+    spyOn(mockApp, 'getCommunities');
+
     mockApp.ready();
 
     expect(getDataSpy).toHaveBeenCalled();
+    expect(mockApp.activeCommunity).toEqual('Hermosa');
     expect(mockApp.commercialData).toEqual(testData);
   });
+
 });
