@@ -92,7 +92,7 @@ function getData(type, debug) {
 
   // Make a GET request to the API.
   oboe(this.pendingApiCall)
-    // Run app.whenDone when complete.
+    // Run whenDone when complete.
     .done(this.whenDone.bind(this))
     // Error handling.
     .fail(function(err) {
@@ -101,18 +101,28 @@ function getData(type, debug) {
 }
 
 // Handle a chunk of data from the JSON stream.
-function onData(chunk, path, ancestors) {
-
-
-}
+function onData(chunk, path, ancestors) {}
 
 // When the JSON is completely done, store it appropriately.
 function whenDone(data) {
 
   // Use d3 to add elements if the data wasn't there last call.
   // We just change the bg-color if is a Commercial entry, for now.
-  d3
-    .select('#data')
+  var selectData;
+  switch (this.apiType) {
+  case 'Residential':
+    this.residentialData = data;
+    selectData = d3.select('#data-r');
+    break;
+  case 'Commercial':
+    this.commercialData = data;
+    selectData = d3.select('#data-c');
+    break;
+  default:
+    throw 'whenDone: No data assignment';
+  }
+
+  selectData
     .selectAll('div')
     .data(data)
     .enter()
@@ -149,16 +159,7 @@ function whenDone(data) {
       return 'Total kWh: ' + d.total_kwh;
     });
 
-  switch (this.apiType) {
-    case 'Residential':
-      this.residentialData = data;
-      break;
-    case 'Commercial':
-      this.commercialData = data;
-      break;
-    default:
-      throw 'whenDone: No data assignment';
-  }
+
   // Did we get commercial data?
   if (!this.commercialData || this.commercialData.length === 0) {
     this.getData('Commercial');
